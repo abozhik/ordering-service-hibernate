@@ -3,7 +3,6 @@ package abozhik.service;
 import abozhik.model.Ordering;
 import abozhik.model.OrderingItem;
 
-import java.sql.SQLException;
 import java.util.Optional;
 
 public interface OrderingService {

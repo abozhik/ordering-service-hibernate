@@ -1,9 +1,11 @@
 package abozhik.sessionmanager;
 
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
+@Slf4j
 public class SessionManagerHibernate implements SessionManager {
 
     private DatabaseSessionHibernate databaseSession;
@@ -32,6 +34,7 @@ public class SessionManagerHibernate implements SessionManager {
             databaseSession.getTransaction().commit();
             databaseSession.getSession().close();
         } catch (Exception e) {
+            log.error("Error during commit session", e);
             throw new SessionManagerException(e);
         }
     }
@@ -43,6 +46,7 @@ public class SessionManagerHibernate implements SessionManager {
             databaseSession.getTransaction().rollback();
             databaseSession.getSession().close();
         } catch (Exception e) {
+            log.error("Error during rollback session", e);
             throw new SessionManagerException(e);
         }
     }
@@ -66,6 +70,7 @@ public class SessionManagerHibernate implements SessionManager {
             databaseSession.close();
             databaseSession = null;
         } catch (Exception e) {
+            log.error("Error during closing database session", e);
             throw new SessionManagerException(e);
         }
     }

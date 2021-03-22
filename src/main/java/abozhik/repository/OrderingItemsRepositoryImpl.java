@@ -2,7 +2,6 @@ package abozhik.repository;
 
 import abozhik.model.OrderingItem;
 import abozhik.sessionmanager.DatabaseSessionHibernate;
-import abozhik.sessionmanager.SessionManager;
 import abozhik.sessionmanager.SessionManagerHibernate;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.query.Query;
@@ -20,15 +19,11 @@ public class OrderingItemsRepositoryImpl implements OrderingItemsRepository {
 
     public void updateItemCount(Long orderingItemId, Integer itemCount) {
         DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
-        Query query = currentSession.getSession()
+        Query<?> query = currentSession.getSession()
                 .createQuery("update OrderingItem oi set oi.itemCount=:itemCount where oi.id=:id");
         query.setParameter("itemCount", itemCount);
         query.setParameter("id", orderingItemId);
         query.executeUpdate();
     }
 
-    @Override
-    public SessionManager getSessionManager() {
-        return sessionManager;
-    }
 }

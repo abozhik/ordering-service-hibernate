@@ -4,23 +4,22 @@ import abozhik.model.Ordering;
 import abozhik.model.OrderingItem;
 import abozhik.repository.OrderingItemsRepository;
 import abozhik.repository.OrderingRepository;
-import abozhik.sessionmanager.SessionManager;
+import abozhik.sessionmanager.SessionManagerHibernate;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
 
+@Slf4j
 @RequiredArgsConstructor
 public class OrderingServiceImpl implements OrderingService {
 
-    private static final Logger logger = LoggerFactory.getLogger(OrderingServiceImpl.class);
-
     private final OrderingRepository orderingRepository;
     private final OrderingItemsRepository orderingItemsRepository;
+    private final SessionManagerHibernate sessionManager;
 
     public Optional<Ordering> saveOrUpdateOrdering(Ordering ordering) {
-        try (SessionManager sessionManager = orderingRepository.getSessionManager()) {
+        try (sessionManager) {
             sessionManager.beginSession();
             try {
                 for (var orderingItem : ordering.getOrderingItems()) {
@@ -30,7 +29,7 @@ public class OrderingServiceImpl implements OrderingService {
                 sessionManager.commitSession();
                 return resultOrdering;
             } catch (Exception e) {
-                logger.error(e.getMessage(), e);
+                log.error("Error during saving ordering", e);
                 sessionManager.rollbackSession();
             }
         }
@@ -38,7 +37,7 @@ public class OrderingServiceImpl implements OrderingService {
     }
 
     public void addItemToOrdering(Long orderingId, OrderingItem orderingItem) {
-        try (SessionManager sessionManager = orderingItemsRepository.getSessionManager()) {
+        try (sessionManager) {
             sessionManager.beginSession();
             try {
                 Ordering ordering = new Ordering();
@@ -47,34 +46,34 @@ public class OrderingServiceImpl implements OrderingService {
                 orderingItemsRepository.saveOrderingItem(orderingItem);
                 sessionManager.commitSession();
             } catch (Exception e) {
-                logger.error(e.getMessage(), e);
+                log.error("Error during adding item to ordering", e);
                 sessionManager.rollbackSession();
             }
         }
     }
 
     public void changeItemCount(Long orderingItemId, Integer itemCount) {
-        try (SessionManager sessionManager = orderingItemsRepository.getSessionManager()) {
+        try (sessionManager) {
             sessionManager.beginSession();
             try {
                 orderingItemsRepository.updateItemCount(orderingItemId, itemCount);
                 sessionManager.commitSession();
             } catch (Exception e) {
-                logger.error(e.getMessage(), e);
+                log.error("Error during changing item count in ordering", e);
                 sessionManager.rollbackSession();
             }
         }
     }
 
     public Optional<Ordering> getOrdering(Long orderingId) {
-        try (SessionManager sessionManager = orderingRepository.getSessionManager()) {
+        try (sessionManager) {
             sessionManager.beginSession();
             try {
                 Optional<Ordering> orderingWithItems = orderingRepository.getOrderingWithItems(orderingId);
                 sessionManager.commitSession();
                 return orderingWithItems;
             } catch (Exception e) {
-                logger.error(e.getMessage(), e);
+                log.error("Error during getting ordering", e);
                 sessionManager.rollbackSession();
             }
         }
@@ -82,13 +81,14 @@ public class OrderingServiceImpl implements OrderingService {
     }
 
     public void setAllOrderingDone() {
-        try (SessionManager sessionManager = orderingRepository.getSessionManager()) {
+        try (sessionManager) {
             sessionManager.beginSession();
             try {
                 orderingRepository.setAllOrderingDone();
                 sessionManager.commitSession();
+                log.info("All ordering is done");
             } catch (Exception e) {
-                logger.error(e.getMessage(), e);
+                log.error("Error during setting all orderings done", e);
                 sessionManager.rollbackSession();
             }
         }

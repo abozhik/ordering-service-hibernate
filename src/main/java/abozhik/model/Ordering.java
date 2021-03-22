@@ -26,7 +26,12 @@ public class Ordering {
     @Column(name = "done")
     private boolean done;
 
-    @OneToMany(mappedBy = "ordering", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "ordering", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.EAGER)
     private List<OrderingItem> orderingItems;
 
+    public Ordering(String userName, boolean done, List<OrderingItem> orderingItems) {
+        this.userName = userName;
+        this.done = done;
+        this.orderingItems = orderingItems;
+    }
 }

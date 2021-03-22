@@ -1,6 +1,7 @@
 package abozhik.sessionmanager;
 
 public interface SessionManager extends AutoCloseable {
+
     void beginSession();
 
     void commitSession();
@@ -9,5 +10,5 @@ public interface SessionManager extends AutoCloseable {
 
     void close();
 
-    DatabaseSession getCurrentSession();
+    DatabaseSessionHibernate getCurrentSession();
 }

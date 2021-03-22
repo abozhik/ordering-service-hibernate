@@ -7,7 +7,7 @@ import org.hibernate.Transaction;
 
 @Getter
 @Setter
-public class DatabaseSessionHibernate implements DatabaseSession {
+public class DatabaseSessionHibernate {
     private final Session session;
     private final Transaction transaction;
 

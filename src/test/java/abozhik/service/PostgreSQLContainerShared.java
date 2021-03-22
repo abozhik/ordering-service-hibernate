@@ -4,7 +4,8 @@ import org.flywaydb.core.Flyway;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 public class PostgreSQLContainerShared extends PostgreSQLContainer<PostgreSQLContainerShared> {
-    private static final String IMAGE_VERSION = "postgres";
+
+    private static final String IMAGE_VERSION = "postgres:12";
     private static PostgreSQLContainerShared container;
 
     private PostgreSQLContainerShared() {
